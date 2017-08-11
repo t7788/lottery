@@ -66,8 +66,12 @@ app.get('/api/odds', function (req, res, next) {
     var period = ''
     client.get("period", function (err, reply) {
         period = reply - 1
-        client.get("bonus_" + period, function (err, reply) {
-            res.send(reply)
+        client.mget(["bonus_" + period, "ren9_" + period], function (err, reply) {
+            let data = {
+                fourteen: JSON.parse(reply[0]),
+                ren9: JSON.parse(reply[1])
+            }
+            res.send(data)
             client.quit()
         })
     })

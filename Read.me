@@ -9,6 +9,7 @@ forever start -l /data/lottery/logs/getbonus.log -a getbonus.js
 forever start -l /data/lottery/logs/getdeadline.log -a getdeadline.js
 
 forever start -l /data/lottery/logs/app_server.log -a app_server.js
+
 # 启动
 forever start ./bin/www  ＃最简单的启动方式
 forever start -l forever.log ./bin/www  #指定forever日志输出文件，默认路径~/.forever

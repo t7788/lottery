@@ -4,7 +4,7 @@ var superagent = require('superagent')
 var moment = require('moment')
 var cheerio = require('cheerio')
 
-schedule.scheduleJob('0 */1 * * * *', function () {
+schedule.scheduleJob('0 0 */2 * * *', function () {
     let time = moment().format('YYYY-MM-DD HH:mm:ss')
     console.log(time)
     superagent.get('http://trade.500.com/sfc/')

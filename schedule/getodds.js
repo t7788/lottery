@@ -3,7 +3,7 @@ var schedule = require('node-schedule')
 var superagent = require('superagent')
 var moment = require('moment')
 
-schedule.scheduleJob('0 */1 * * * *', function () {
+schedule.scheduleJob('0 */10 * * * *', function () {
     let day = moment().format('YYYY-MM-DD')
     let time = moment().format('YYYY-MM-DD HH:mm:ss')
     console.log(time)

@@ -16,7 +16,7 @@ schedule.scheduleJob('0 */5 * * * *', function () {
                 console.log(err)
                 return
             }
-
+            console.log('sss')
             let jsonObj = JSON.parse(sres.text)
             console.log(jsonObj.status)
             if (jsonObj.status.last_updated) {

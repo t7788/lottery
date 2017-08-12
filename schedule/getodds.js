@@ -11,12 +11,14 @@ schedule.scheduleJob('0 */10 * * * *', function () {
     superagent.get(url)
         .set('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.13 Safari/537.36')
         .end(function (err, sres) {
+            console.log('superagent')
             if (err) {
                 console.log(err)
                 return
             }
 
             let jsonObj = JSON.parse(sres.text)
+            console.log(jsonObj.status)
             if (jsonObj.status.last_updated) {
                 let Redis = require('ioredis');
                 let redis = new Redis(6001, '122.226.180.195')
@@ -24,7 +26,7 @@ schedule.scheduleJob('0 */10 * * * *', function () {
                     console.log(result)
                     redis.quit()
                 })
-                console.log("odds_" + day)
+                console.log("fail")
 
             } else {
                 console.log(jsonObj.status)

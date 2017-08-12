@@ -8,11 +8,9 @@ var superagent = charset(require('superagent'))
 schedule.scheduleJob('0 */5 10 * * *', function () {
     let time = moment().format('YYYY-MM-DD HH:mm:ss')
     console.log(time)
-    let redis = require("redis")
-    let client = redis.createClient(6001, '122.226.180.195', {});
-    client.on("error", function (err) {
-        console.log("Error " + err);
-    });
+
+    let Redis = require('ioredis');
+    let client = new Redis(6001, '122.226.180.195')
 
     let count = 0
     superagent.get("http://www.okooo.com/zucai/")
@@ -40,6 +38,7 @@ schedule.scheduleJob('0 */5 10 * * *', function () {
                 next: $('.float_l.sqgc em').text().trim()
             }
             client.set("bonus_" + period_prev, JSON.stringify(bonusinfo))
+            console.log(JSON.stringify(bonusinfo))
             count++
             endQuery()
 
@@ -65,6 +64,7 @@ schedule.scheduleJob('0 */5 10 * * *', function () {
                 next: $('.float_l.sqgc em').text().trim()
             }
             client.set("ren9_" + period_prev, JSON.stringify(bonusinfo))
+            console.log(JSON.stringify(bonusinfo))
             count++
             endQuery()
 
@@ -72,6 +72,7 @@ schedule.scheduleJob('0 */5 10 * * *', function () {
 
     function endQuery() {
         if (count == 2) {
+            console.log('succ')
             client.quit()
         }
     }

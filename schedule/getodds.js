@@ -3,8 +3,7 @@ var schedule = require('node-schedule')
 var superagent = require('superagent')
 var moment = require('moment')
 
-schedule.scheduleJob('0 */1 * * * *', function () {
-
+schedule.scheduleJob('0 */2 * * * *', function () {
     let day = moment().format('YYYY-MM-DD')
     let time = moment().format('YYYY-MM-DD HH:mm:ss')
     console.log(time)
@@ -12,21 +11,22 @@ schedule.scheduleJob('0 */1 * * * *', function () {
     superagent.get(url)
         .set('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.13 Safari/537.36')
         .end(function (err, sres) {
-
-            console.log('superagent')
             if (err) {
                 console.log(err)
                 return
             }
 
-            let redis = require("redis")
-            let client = redis.createClient(6001, '122.226.180.195', {});
-            client.on("error", function (err) {
-                console.log("Error " + err);
-            });
-
-            client.set("odds_" + day, sres.text)
-            client.quit()
+            let jsonObj = JSON.parse(sres.text)
+            if (jsonObj.status.last_updated) {
+                let Redis = require('ioredis');
+                let redis = new Redis(6001, '122.226.180.195')
+                redis.set("odds_" + day, sres.text)
+                console.log("succ")
+                console.log("odds_" + day)
+                redis.quit()
+            } else {
+                console.log(jsonObj.status)
+            }
         })
 })
 

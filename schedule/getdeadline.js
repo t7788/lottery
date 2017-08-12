@@ -9,15 +9,14 @@ schedule.scheduleJob('0 10 10 * * *', function () {
     let time = moment().format('YYYY-MM-DD HH:mm:ss')
     console.log(time)
 
-    let redis = require("redis")
-    let client = redis.createClient(6001, '122.226.180.195', {});
-    client.on("error", function (err) {
-        console.log("Error " + err);
-    });
+    let Redis = require('ioredis');
+    let client = new Redis(6001, '122.226.180.195')
+
     let count = 0
     let items = []
-    client.get("period", function (err, reply) {
-        let period = parseInt(reply)
+
+    client.get('period').then(function (result) {
+        let period = parseInt(result)
         let periods = [period, period + 1, period + 2]
         for (let i = 0; i < 3; i++) {
             superagent.get('http://www.okooo.com/zucai/' + periods[i])
@@ -38,8 +37,8 @@ schedule.scheduleJob('0 10 10 * * *', function () {
     })
 
     function endQuery() {
-        console.log(items)
         if (count == 3) {
+            console.log(items)
             items.forEach(function (item) {
                 client.set("deadline_" + item.period, item.deadline)
             })

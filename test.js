@@ -22,7 +22,7 @@ client.get("period", function (err, reply) {
     })
 })*/
 
-superagent.get('http://i.sporttery.cn/odds_calculator/get_odd')
+superagent.get('http://www.baidu.com')
     .end(function (err, sres) {
 
         if (err) {

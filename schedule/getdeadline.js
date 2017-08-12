@@ -38,11 +38,22 @@ schedule.scheduleJob('0 10 10 * * *', function () {
 
     function endQuery() {
         if (count == 3) {
+            let num = 0
             console.log(items)
             items.forEach(function (item) {
-                client.set("deadline_" + item.period, item.deadline)
+                client.set("deadline_" + item.period, item.deadline).then(function (result) {
+                    console.log(result)
+                    num++
+                    endGet()
+                })
             })
-            client.quit()
+
+            function endGet() {
+                if (num == 3) {
+                    console.log('succ')
+                    client.quit()
+                }
+            }
         }
     }
 })

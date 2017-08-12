@@ -4,7 +4,7 @@ var superagent = require('superagent')
 var moment = require('moment')
 var cheerio = require('cheerio')
 
-schedule.scheduleJob('0 */2 * * * *', function () {
+schedule.scheduleJob('0 */1 * * * *', function () {
     let time = moment().format('YYYY-MM-DD HH:mm:ss')
     console.log(time)
     superagent.get('http://trade.500.com/sfc/')
@@ -31,13 +31,13 @@ schedule.scheduleJob('0 */2 * * * *', function () {
                         let redis = new Redis(6001, '122.226.180.195')
                         redis.set("period", period)
                         if (jsonObj.status.code == 0) {
-                            redis.set("fourteen_" + period, sres.text)
-                            console.log('succ')
+                            redis.set("fourteen_" + period, sres.text).then(function (result) {
+                                console.log(result)
+                                redis.quit()
+                            })
                         } else {
                             console.log(jsonObj.status)
                         }
-                        redis.quit()
-
                     })
             }
         })

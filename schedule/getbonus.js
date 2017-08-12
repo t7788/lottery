@@ -37,10 +37,13 @@ schedule.scheduleJob('0 */5 10 * * *', function () {
                 },
                 next: $('.float_l.sqgc em').text().trim()
             }
-            client.set("bonus_" + period_prev, JSON.stringify(bonusinfo))
+            client.set("bonus_" + period_prev, JSON.stringify(bonusinfo)).then(function (result) {
+                console.log(result)
+                count++
+                endQuery()
+            })
             console.log(JSON.stringify(bonusinfo))
-            count++
-            endQuery()
+
 
         })
     superagent.get("http://www.okooo.com/zucai/ren9/")
@@ -63,11 +66,12 @@ schedule.scheduleJob('0 */5 10 * * *', function () {
                 },
                 next: $('.float_l.sqgc em').text().trim()
             }
-            client.set("ren9_" + period_prev, JSON.stringify(bonusinfo))
+            client.set("ren9_" + period_prev, JSON.stringify(bonusinfo)).then(function (result) {
+                console.log(result)
+                count++
+                endQuery()
+            })
             console.log(JSON.stringify(bonusinfo))
-            count++
-            endQuery()
-
         })
 
     function endQuery() {

@@ -3,12 +3,12 @@ forever start -l /data/mypj/lottery/logs/getfourteen.log -o /data/mypj/lottery/l
 
 
 
-forever start -l /data/lottery/logs/getodds.log -a getodds.js
-forever start -l /data/lottery/logs/getfourteen.log -a getfourteen.js
-forever start -l /data/lottery/logs/getbonus.log -a getbonus.js
+forever start -l /data/lottery/logs/getodds.log -a getodds.js &&
+forever start -l /data/lottery/logs/getfourteen.log -a getfourteen.js &&
+forever start -l /data/lottery/logs/getbonus.log -a getbonus.js &&
 forever start -l /data/lottery/logs/getdeadline.log -a getdeadline.js
 
-forever start -l /data/lottery/logs/app_server.log -a app_server.js
+forever start -l /data/lottery/logs/api_server.log -a api_server.js
 
 # 启动
 forever start ./bin/www  ＃最简单的启动方式

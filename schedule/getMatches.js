@@ -44,8 +44,11 @@ schedule.scheduleJob('0 */2 * * * *', function () {
                 $("#table_match tbody tr").each(function (index, tr) {
                     let gy = $(tr).attr('gy')
                     let id = a2b($(tr).attr('fid'))
+                    let date = $(tr).find('td').eq(0).text()
+                    date = date.replace(/[0-9]/ig, "")
                     let match = {
                         id: id,
+                        date: date,
                         status: a2b($(tr).attr('status')),
                         status_txt: $(tr).find('td').eq(4).text(),
                         league: gy.split(',')[0],
@@ -68,6 +71,7 @@ schedule.scheduleJob('0 */2 * * * *', function () {
                         had: liveOddsList[id].sp,
                         hhad: liveOddsList[id].rqsp
                     }
+                    console.log(match)
                     if (i == 0) {
                         matches.today.push(match)
                     } else {
@@ -93,5 +97,4 @@ schedule.scheduleJob('0 */2 * * * *', function () {
         }
         return str
     }
-
 })

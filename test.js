@@ -52,19 +52,44 @@ http.get(options, function (res) {
     });
 })*/
 
-var request = require('request');
+/*var request = require('request');
 request('http://i.sporttery.cn/wap/fb_lottery/fb_lottery_match?key=wilo&num=17113', function (error, response, body) {
     if (!error && response.statusCode == 200) {
         //console.log(body)
 
-       /* console.log(error)
+       /!* console.log(error)
         let $ = cheerio.load(body)
-        let deadline = $('.overTime em').text().trim()*/
+        let deadline = $('.overTime em').text().trim()*!/
         console.log(body)
 
     }
-})
+})*/
 
+var request = require('request')
+let url = "http://a.haocai138.com/info/match/Jingcai.aspx?date=2017-08-16"
+var options = {
+    url: url
+};
+
+request(options, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+        let $ = cheerio.load(body)
+        let is_find = false
+        $('a').each(function (idx, ent) {
+            console.log($(ent).text())
+            if ($(ent).text() == '町田泽维') {
+
+                let id = $(ent).attr('id').replace(/[^0-9]/ig, "")
+                console.log('id:' + id + '' + match_id)
+                is_find = true
+                return false
+            }
+        })
+        if (!is_find) {
+            console.log('not')
+        }
+    }
+})
 
 
 

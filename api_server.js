@@ -77,17 +77,6 @@ app.get('/api/odds', function (req, res, next) {
     })
 
 }).get('/api/deadline', function (req, res, next) {
-
-    /*let Redis = require('ioredis');
-    let redis = new Redis(6001, '122.226.180.195')
-
-    redis.get('period').then(function (result) {
-        return "deadline_" + result
-    }).then(function (result) {
-        res.send(reply)
-        redis.quit()
-    })*/
-
     let redis = require("redis")
     let client = redis.createClient(6001, '122.226.180.195', {});
     client.on("error", function (err) {
@@ -101,6 +90,15 @@ app.get('/api/odds', function (req, res, next) {
             client.quit()
         })
     })
+}).get('/api/matches', function (req, res, next) {
+    let Redis = require('ioredis');
+    let redis = new Redis(6001, '122.226.180.195')
+
+    let today = moment().format('YYYY-MM-DD')
+    redis.hget('matches_' + today,'data').then(function (result) {
+        res.send(result)
+    })
+    redis.quit()
 })
 
 app.listen(1501, function (req, res) {

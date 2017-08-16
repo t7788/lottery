@@ -54,6 +54,7 @@ schedule.scheduleJob('0 */2 * * * *', function () {
                                     let id = a2b($(tr).attr('fid'))
                                     let weekday = $(tr).find('td').eq(0).text()
                                     weekday = weekday.replace(/[0-9]/ig, "")
+                                    let number = weekday.replace(/[^0-9]/ig, "")
                                     let fix = l('#bet_content tr[fid=' + id + ']').find('td.border_left p span').text()
                                     let date = l('#bet_content tr[fid=' + id + ']').attr('pdate')
                                     let single = single_arr.indexOf(id.toString()) == -1 ? false : true
@@ -61,6 +62,7 @@ schedule.scheduleJob('0 */2 * * * *', function () {
                                         id: id,
                                         date: date,
                                         weekday: weekday,
+                                        number: number,
                                         status: a2b($(tr).attr('status')),
                                         status_txt: $(tr).find('td').eq(4).text(),
                                         league: gy.split(',')[0],

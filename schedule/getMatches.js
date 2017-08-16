@@ -52,9 +52,9 @@ schedule.scheduleJob('0 */2 * * * *', function () {
                                 $("#table_match tbody tr").each(function (index, tr) {
                                     let gy = $(tr).attr('gy')
                                     let id = a2b($(tr).attr('fid'))
-                                    let weekday = $(tr).find('td').eq(0).text()
-                                    weekday = weekday.replace(/[0-9]/ig, "")
-                                    let number = weekday.replace(/[^0-9]/ig, "")
+                                    let weeknum = $(tr).find('td').eq(0).text()
+                                    let weekday = weeknum.replace(/[0-9]/ig, "")
+                                    let number = weeknum.replace(/[^0-9]/ig, "")
                                     let fix = l('#bet_content tr[fid=' + id + ']').find('td.border_left p span').text()
                                     let date = l('#bet_content tr[fid=' + id + ']').attr('pdate')
                                     let single = single_arr.indexOf(id.toString()) == -1 ? false : true

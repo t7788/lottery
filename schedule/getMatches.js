@@ -153,16 +153,16 @@ schedule.scheduleJob('0 */2 * * * *', function () {
             redis.hmset('matches_' + today, {time: time, data: matches_str})
             redis.quit()
             console.log('end--------')
-        });
+        })
 
-    });
+    })
+    var fetchTrend = function (trendId, callback) {
+        redis.hmget(trendId, ['had', 'hhad']).then((hdArr) => {
+            callback(null, {id: trendId, had: JSON.parse(hdArr[0]), hhad: JSON.parse(hdArr[1])});
+        })
+    }
 })
 
-var fetchTrend = function (trendId, callback) {
-    redis.hmget(trendId, ['had', 'hhad']).then((hdArr) => {
-        callback(null, {id: trendId, had: JSON.parse(hdArr[0]), hhad: JSON.parse(hdArr[1])});
-    })
-};
 
 function a2b(str) {
     if (str == '' || str == null || str == 'undefined' || str == '0') {

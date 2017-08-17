@@ -27,8 +27,8 @@ schedule.scheduleJob('0 */8 * * * *', function () {
                         let match = jsonObj.data[key]
                         let trend = {
                             id: match.num,
-                            had: hs(match, 'had') ? [parseFloat(match.had.h_trend), parseFloat(match.had.a_trend), parseFloat(match.had.d_trend)] : [],
-                            hhad: hs(match, 'hhad') ? [parseFloat(match.hhad.h_trend), parseFloat(match.hhad.a_trend), parseFloat(match.hhad.d_trend)] : [],
+                            had: hs(match, 'had') ? [parseFloat(match.had.h_trend), parseFloat(match.had.d_trend), parseFloat(match.had.a_trend)] : [0, 0, 0],
+                            hhad: hs(match, 'hhad') ? [parseFloat(match.hhad.h_trend), parseFloat(match.hhad.d_trend), parseFloat(match.hhad.a_trend)] : [0, 0, 0],
                         }
                         trends.push(trend)
                     }

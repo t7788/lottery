@@ -53,10 +53,11 @@ schedule.scheduleJob('0 */2 * * * *', function () {
                                     let gy = $(tr).attr('gy')
                                     let id = a2b($(tr).attr('fid'))
                                     let weeknum = $(tr).find('td').eq(0).text()
-                                    let weekday = weeknum.replace(/[0-9]/ig, "")
+                                    //let weekday = weeknum.replace(/[0-9]/ig, "")
                                     let number = weeknum.replace(/[^0-9]/ig, "")
                                     let fix = l('#bet_content tr[fid=' + id + ']').find('td.border_left p span').text()
                                     let date = l('#bet_content tr[fid=' + id + ']').attr('pdate')
+                                    let weekday = l('#bet_content tr[fid=' + id + ']').parents('.bet_table').siblings(".bet_date").text().trim().substring(0, 3)
                                     let single = single_arr.indexOf(id.toString()) == -1 ? false : true
                                     let match = {
                                         id: id,
@@ -80,8 +81,8 @@ schedule.scheduleJob('0 */2 * * * *', function () {
                                         away: {
                                             name: gy.split(',')[2],
                                             score: a2b($(tr).find('td').eq(6).find('.pk a').eq(2).text()),
-                                            yellow: a2b($(tr).find('td').eq(6).find('.yellowcard').text()),
-                                            red: a2b($(tr).find('td').eq(6).find('.redcard').text()),
+                                            yellow: a2b($(tr).find('td').eq(7).find('.yellowcard').text()),
+                                            red: a2b($(tr).find('td').eq(7).find('.redcard').text()),
                                         },
                                         had: liveOddsList[id].sp,
                                         hhad: liveOddsList[id].rqsp
@@ -105,6 +106,16 @@ schedule.scheduleJob('0 */2 * * * *', function () {
     }
 
     ep.after('match', 2, function (s) {
+        matches.today.sort((a, b) => {
+            a = a.number;
+            b = b.number;
+            return a - b;
+        })
+        matches.yesterday.sort((a, b) => {
+            a = a.number;
+            b = b.number;
+            return a - b;
+        })
         let matches_str = JSON.stringify(matches)
         redis.hmset('matches_' + today, {time: time, data: matches_str})
         redis.quit()
@@ -119,4 +130,5 @@ schedule.scheduleJob('0 */2 * * * *', function () {
         }
         return str
     }
+
 })

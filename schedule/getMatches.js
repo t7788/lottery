@@ -6,6 +6,7 @@ var cheerio = require('cheerio')
 var eventproxy = require('eventproxy');
 var charset = require('superagent-charset')
 var superagent = charset(require('superagent'))
+var async = require('async')
 
 schedule.scheduleJob('0 */2 * * * *', function () {
     let time = moment().format('YYYY-MM-DD HH:mm:ss')
@@ -59,10 +60,12 @@ schedule.scheduleJob('0 */2 * * * *', function () {
                                     let date = l('#bet_content tr[fid=' + id + ']').attr('pdate')
                                     let weekday = l('#bet_content tr[fid=' + id + ']').parents('.bet_table').siblings(".bet_date").text().trim().substring(0, 3)
                                     let single = single_arr.indexOf(id.toString()) == -1 ? false : true
+                                    let wkday = weekday.replace('星期', '周') + number
                                     let match = {
                                         id: id,
                                         date: date,
                                         weekday: weekday,
+                                        wkday: wkday,
                                         number: number,
                                         status: a2b($(tr).attr('status')),
                                         status_txt: $(tr).find('td').eq(4).text(),
@@ -116,19 +119,56 @@ schedule.scheduleJob('0 */2 * * * *', function () {
             b = b.number;
             return a - b;
         })
-        let matches_str = JSON.stringify(matches)
-        redis.hmset('matches_' + today, {time: time, data: matches_str})
-        redis.quit()
-        console.log('end--------')
+
+        let idArr = []
+        matches.today.forEach((mt) => {
+            idArr.push('trend_' + mt.wkday)
+        })
+        matches.yesterday.forEach((mt) => {
+            idArr.push('trend_' + mt.wkday)
+        })
+
+        async.mapLimit(idArr, 10, (trendId, callback) => {
+            fetchTrend(trendId, callback);
+        }, (err, trendArr) => {
+            let tArr = new Array()
+            trendArr.forEach((trend) => {
+                tArr[trend.id] = {
+                    had_trend: trend.had != null ? trend.had : [0, 0, 0],
+                    hhad_trend: trend.hhad != null ? trend.hhad : [0, 0, 0]
+                }
+            })
+            matches.today.map((mt) => {
+                mt.had_trend = tArr['trend_' + mt.wkday].had_trend
+                mt.hhad_trend = tArr['trend_' + mt.wkday].hhad_trend
+                return mt
+            })
+            matches.yesterday.map((mt) => {
+                mt.had_trend = tArr['trend_' + mt.wkday].had_trend
+                mt.hhad_trend = tArr['trend_' + mt.wkday].hhad_trend
+                return mt
+            })
+
+            let matches_str = JSON.stringify(matches)
+            redis.hmset('matches_' + today, {time: time, data: matches_str})
+            redis.quit()
+            console.log('end--------')
+        });
+
     });
-
-    function a2b(str) {
-        if (str == '' || str == null || str == 'undefined' || str == '0') {
-            str = 0
-        } else {
-            str = parseInt(str)
-        }
-        return str
-    }
-
 })
+
+var fetchTrend = function (trendId, callback) {
+    redis.hmget(trendId, ['had', 'hhad']).then((hdArr) => {
+        callback(null, {id: trendId, had: JSON.parse(hdArr[0]), hhad: JSON.parse(hdArr[1])});
+    })
+};
+
+function a2b(str) {
+    if (str == '' || str == null || str == 'undefined' || str == '0') {
+        str = 0
+    } else {
+        str = parseInt(str)
+    }
+    return str
+}

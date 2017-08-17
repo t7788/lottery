@@ -1,96 +1,78 @@
-// 引入依赖
+// 获取比赛详细信息
 
-var express = require('express')
+var schedule = require('node-schedule')
 var moment = require('moment')
-
-var app = express()
 var cheerio = require('cheerio')
-var superagent = require('superagent')
+var eventproxy = require('eventproxy');
+var charset = require('superagent-charset')
+var superagent = charset(require('superagent'))
 
-/*const https = require('https');
+let time = moment().format('YYYY-MM-DD HH:mm:ss')
+console.log('start--------')
+console.log(time)
 
-var options = {
-    hostname: 'myportal.vtc.edu.hk',
-    port: 443,
-    path: '/wps/portal',
-    method: 'GET',
-    secureProtocol: 'TLSv1_method'
-};
+let header = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.13 Safari/537.36'
+}
 
-var req = https.request(options, (res) => {
-    console.log('statusCode:', res.statusCode);
-    console.log('headers:', res.headers);
+let url = "http://live.500.com/?e=2017-08-15"
+superagent.get(url)
+    .charset('gb2312')
+    .set(header)
+    .end(function (err, sres) {
+        if (!err) {
+            let $ = cheerio.load(sres.text)
+            let script = $('script').eq(8).html()
+            eval(script)
+            $("#table_match tbody tr").each(function (index, tr) {
+                if (index == 0) {
+                    let gy = $(tr).attr('gy')
+                    let id = a2b($(tr).attr('fid'))
+                    let date = $(tr).find('td').eq(0).text()
+                    date = date.replace(/[0-9]/ig, "")
+                    let href = $(tr).find('td').eq(6).find('.pk a').eq(1).attr('href');
+                    href = 'http://live.500.com' + href.substring(1, href.length)
+                    let match = {
+                        id: id,
+                        date: date,
+                        status: a2b($(tr).attr('status')),
+                        status_txt: $(tr).find('td').eq(3).text(),
+                        league: gy.split(',')[0],
+                        bgcolor: $(tr).find('td.ssbox_01').eq(0).attr('bgcolor'),
+                        order: $(tr).find('td').eq(2).text(),
+                        match_time: $(tr).find('td').eq(3).text(),
+                        href: href,
+                        home: {
+                            name: gy.split(',')[1],
+                            score: a2b($(tr).find('td').eq(6).find('.pk a').eq(0).text()),
+                            yellow: a2b($(tr).find('td').eq(5).find('.yellowcard').text()),
+                            red: a2b($(tr).find('td').eq(5).find('.redcard').text()),
+                        },
+                        away: {
+                            name: gy.split(',')[2],
+                            score: a2b($(tr).find('td').eq(6).find('.pk a').eq(2).text()),
+                            yellow: a2b($(tr).find('td').eq(6).find('.yellowcard').text()),
+                            red: a2b($(tr).find('td').eq(6).find('.redcard').text()),
+                        },
+                        fix: 1,
+                        had: liveOddsList[id].sp,
+                        hhad: liveOddsList[id].rqsp
+                    }
+                    console.log(match)
+                }
+            })
 
-    res.on('data', (d) => {
-        process.stdout.write(d);
-    });
-});
-req.end();
-
-req.on('error', (e) => {
-    console.error(e);
-});*/
-
-/*var http = require('http');
-var querystring = require('querystring');
-var options = {
-    host: 'http://i.sporttery.cn/wap/fb_lottery/fb_lottery_match?key=wilo&num=17113', // 这个不用说了, 请求地址
-    port: 80,
-    path: '/', // 具体路径, 必须以'/'开头, 是相对于host而言的
-    method: 'GET', // 请求方式, 这里以post为例
-    headers: { // 必选信息, 如果不知道哪些信息是必须的, 建议用抓包工具看一下, 都写上也无妨...
-        'Content-Type': 'application/json'
-    }
-};
-http.get(options, function (res) {
-    var resData = "";
-    res.on("data", function (data) {
-        resData += data;
-    });
-    res.on("end", function () {
-        console.log(resData)
-    });
-})*/
-
-/*var request = require('request');
-request('http://i.sporttery.cn/wap/fb_lottery/fb_lottery_match?key=wilo&num=17113', function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-        //console.log(body)
-
-       /!* console.log(error)
-        let $ = cheerio.load(body)
-        let deadline = $('.overTime em').text().trim()*!/
-        console.log(body)
-
-    }
-})*/
-
-var request = require('request')
-let url = "http://a.haocai138.com/info/match/Jingcai.aspx?date=2017-08-16"
-var options = {
-    url: url
-};
-
-request(options, function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-        let $ = cheerio.load(body)
-        let is_find = false
-        $('a').each(function (idx, ent) {
-            console.log($(ent).text())
-            if ($(ent).text() == '町田泽维') {
-
-                let id = $(ent).attr('id').replace(/[^0-9]/ig, "")
-                console.log('id:' + id + '' + match_id)
-                is_find = true
-                return false
-            }
-        })
-        if (!is_find) {
-            console.log('not')
+        } else {
+            console.log(err)
         }
+    })
+
+
+function a2b(str) {
+    if (str == '' || str == null || str == 'undefined' || str == '0') {
+        str = 0
+    } else {
+        str = parseInt(str)
     }
-})
-
-
-
-
+    return str
+}

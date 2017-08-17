@@ -49,10 +49,10 @@ schedule.scheduleJob('0 */8 * * * *', function () {
             })
             redis.pexpire('trend_' + match.id, 60 * 60 * 1000)
         })
+
         redis.quit()
         console.log('end------------------')
     })
-
 })
 
 function hs(obj, pt) {

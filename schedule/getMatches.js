@@ -58,15 +58,16 @@ schedule.scheduleJob('0 */2 * * * *', function () {
                                     let number = weeknum.replace(/[^0-9]/ig, "")
                                     let fix = l('#bet_content tr[fid=' + id + ']').find('td.border_left p span').text()
                                     let date = l('#bet_content tr[fid=' + id + ']').attr('pdate')
-                                    let weekday = l('#bet_content tr[fid=' + id + ']').parents('.bet_table').siblings(".bet_date").text().trim().substring(0, 3)
+                                    let weekday = l('#bet_content tr[fid=' + id + ']').attr('gdate').trim().substring(0, 3)
                                     let single = single_arr.indexOf(id.toString()) == -1 ? false : true
                                     let wkday = weekday.replace('星期', '周') + number
                                     let match = {
                                         id: id,
                                         date: date,
                                         weekday: weekday,
-                                        wkday: wkday,
                                         number: number,
+                                        wkday: wkday,
+                                        sort: a2b($(tr).attr('order')),
                                         status: a2b($(tr).attr('status')),
                                         status_txt: $(tr).find('td').eq(4).text(),
                                         league: gy.split(',')[0],
@@ -109,16 +110,14 @@ schedule.scheduleJob('0 */2 * * * *', function () {
     }
 
     ep.after('match', 2, function (s) {
+
         matches.today.sort((a, b) => {
-            a = a.number;
-            b = b.number;
-            return a - b;
+            return a.sort - b.sort;
         })
         matches.yesterday.sort((a, b) => {
-            a = a.number;
-            b = b.number;
-            return a - b;
+            return a.sort - b.sort;
         })
+
 
         let idArr = []
         matches.today.forEach((mt) => {
@@ -141,15 +140,14 @@ schedule.scheduleJob('0 */2 * * * *', function () {
             matches.today.map((mt) => {
                 mt.had_trend = tArr['trend_' + mt.wkday].had_trend
                 mt.hhad_trend = tArr['trend_' + mt.wkday].hhad_trend
-                return mt
             })
             matches.yesterday.map((mt) => {
                 mt.had_trend = tArr['trend_' + mt.wkday].had_trend
                 mt.hhad_trend = tArr['trend_' + mt.wkday].hhad_trend
-                return mt
             })
 
             let matches_str = JSON.stringify(matches)
+
             redis.hmset('matches_' + today, {time: time, data: matches_str})
             redis.quit()
             console.log('end--------')
@@ -161,6 +159,7 @@ schedule.scheduleJob('0 */2 * * * *', function () {
             callback(null, {id: trendId, had: JSON.parse(hdArr[0]), hhad: JSON.parse(hdArr[1])});
         })
     }
+
 })
 
 

@@ -5,7 +5,7 @@ var cheerio = require('cheerio')
 var charset = require('superagent-charset')
 var superagent = charset(require('superagent'))
 
-schedule.scheduleJob('0 */5 10 * * *', function () {
+schedule.scheduleJob('0 2,22,32,52 10,11-18 * * *', function () {
     let time = moment().format('YYYY-MM-DD HH:mm:ss')
     console.log(time)
 

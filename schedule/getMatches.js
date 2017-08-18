@@ -67,7 +67,7 @@ schedule.scheduleJob('0 */2 * * * *', function () {
                                         weekday: weekday,
                                         number: number,
                                         wkday: wkday,
-                                        sort: a2b($(tr).attr('order')),
+                                        sort_id: a2b($(tr).attr('infoid')),
                                         status: a2b($(tr).attr('status')),
                                         status_txt: $(tr).find('td').eq(4).text(),
                                         league: gy.split(',')[0],

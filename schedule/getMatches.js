@@ -112,10 +112,10 @@ schedule.scheduleJob('0 */2 * * * *', function () {
     ep.after('match', 2, function (s) {
 
         matches.today.sort((a, b) => {
-            return a.sort - b.sort;
+            return a.sort_id - b.sort_id;
         })
         matches.yesterday.sort((a, b) => {
-            return a.sort - b.sort;
+            return a.sort_id - b.sort_id;
         })
 
 

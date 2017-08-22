@@ -24,7 +24,6 @@ const exec = (c) => {
 
 console.log('Deploy start.');
 exec(cmd('git status'))
-    .then(() => exec(cmd('cd /data/mypj/lottery')))
     .then(() => exec(cmd('git add .')))
     .then(() => exec(cmd('git commit -m "ss"')))
     .then(() => exec(cmd('git push -u origin master')))

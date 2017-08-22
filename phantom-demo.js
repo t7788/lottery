@@ -19,7 +19,6 @@ phantom.create()
         let $ = cheerio.load(content)
         let t = $('#list_96904 .vsTd').text()
         console.log(t)
-        console.log('111')
         sitepage.close();
         phInstance.exit();
     })

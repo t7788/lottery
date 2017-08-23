@@ -4,7 +4,7 @@ const cmd = (c) => c;
 const shell = 'bash';
 const config = {
     env: {
-        //NODE_ENV: 'production',
+        NODE_ENV: 'production',
         encoding: 'utf8',
     },
     shell,

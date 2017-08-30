@@ -7,42 +7,42 @@ var charset = require('superagent-charset')
 var superagent = charset(require('superagent'))
 var async = require('async')
 
-//schedule.scheduleJob('*/30 * * * * *', function () {
-let time = moment().format('YYYY-MM-DD HH:mm:ss')
-console.log('start--------')
-console.log(time)
-let today = moment().format('YYYY-MM-DD')
-let Redis = require('ioredis');
-let redis = new Redis(6001, '122.226.180.195')
-redis.hget('matches_' + today, 'data').then(function (result) {
-    let matches = JSON.parse(result)
-    let match_urls_arr = [];
-    let baseUrl = 'http://live.500.com/detail.php?fid='
-    let yMts = matches['yesterday']
-    for (let index in yMts) {
-        if (yMts[index].status > 0) {
-            let id = yMts[index].id
-            let url = baseUrl + id + "&r=1"
-            match_urls_arr.push(url)
+schedule.scheduleJob('*/30 * * * * *', function () {
+    let time = moment().format('YYYY-MM-DD HH:mm:ss')
+    console.log('start--------')
+    console.log(time)
+    let today = moment().format('YYYY-MM-DD')
+    let Redis = require('ioredis');
+    let redis = new Redis(6001, '122.226.180.195')
+    redis.hget('matches_' + today, 'data').then(function (result) {
+        let matches = JSON.parse(result)
+        let match_urls_arr = [];
+        let baseUrl = 'http://live.500.com/detail.php?fid='
+        let yMts = matches['yesterday']
+        for (let index in yMts) {
+            if (yMts[index].status > 0) {
+                let id = yMts[index].id
+                let url = baseUrl + id + "&r=1"
+                match_urls_arr.push(url)
+            }
         }
-    }
 
-    async.mapLimit(match_urls_arr, 5, (url, callback) => {
-        fetchUrl(url, callback);
-    }, (err, event_arr) => {
-        async.mapLimit(event_arr, 10, (event, callback) => {
-            redis.hset('MatchEvents', event.match_id, JSON.stringify(event.event)).then((res) => {
-                callback(null, res)
+        async.mapLimit(match_urls_arr, 5, (url, callback) => {
+            fetchUrl(url, callback);
+        }, (err, event_arr) => {
+            async.mapLimit(event_arr, 10, (event, callback) => {
+                redis.hset('MatchEvents', event.match_id, JSON.stringify(event.event)).then((res) => {
+                    callback(null, res)
+                })
+            }, (err, reses) => {
+                redis.quit()
+                console.log(reses)
+                console.log('end--------')
             })
-        }, (err, reses) => {
-            redis.quit()
-            console.log(reses)
-            console.log('end--------')
         })
-    })
 
+    })
 })
-//})
 
 
 var fetchUrl = function (url, callback) {
@@ -73,14 +73,14 @@ var fetchUrl = function (url, callback) {
                             event.name = eName
                             event.detail = $(v).find('td').eq(1).text()
                             if (event.name == '换人') {
-                                event.detail = event.detail.replace(')(','|').replace('(','').replace(')','')
+                                event.detail = event.detail.replace(')(', '|').replace('(', '').replace(')', '')
                             }
                         } else {
                             event.match = 1
                             event.name = toEventName($(v).find('td').eq(4).find('img').attr('src'))
                             event.detail = $(v).find('td').eq(3).text()
                             if (event.name == '换人') {
-                                event.detail = event.detail.replace(')(','|').replace('(','').replace(')','')
+                                event.detail = event.detail.replace(')(', '|').replace('(', '').replace(')', '')
                             }
                         }
                         match_event.event.push(event)

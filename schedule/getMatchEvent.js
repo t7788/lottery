@@ -18,7 +18,7 @@ schedule.scheduleJob('*/30 * * * * *', function () {
         let matches = JSON.parse(result)
         let match_urls_arr = [];
         let baseUrl = 'http://live.500.com/detail.php?fid='
-        let yMts = matches['yesterday']
+        let yMts = matches['today']
         for (let index in yMts) {
             if (yMts[index].status > 0) {
                 let id = yMts[index].id

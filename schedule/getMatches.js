@@ -54,7 +54,6 @@ schedule.scheduleJob('0 */1 * * * *', function () {
                                     let gy = $(tr).attr('gy')
                                     let id = a2b($(tr).attr('fid'))
                                     let weeknum = $(tr).find('td').eq(0).text()
-                                    //let weekday = weeknum.replace(/[0-9]/ig, "")
                                     let number = weeknum.replace(/[^0-9]/ig, "")
                                     let fix = l('#bet_content tr[fid=' + id + ']').find('td.border_left p span').text()
                                     let date = l('#bet_content tr[fid=' + id + ']').attr('pdate')
@@ -76,6 +75,7 @@ schedule.scheduleJob('0 */1 * * * *', function () {
                                         match_time: $(tr).find('td').eq(3).text(),
                                         single: single,
                                         fix: fix,
+                                        dish: $(tr).find('td').eq(6).find('.pk .fgreen').text(),
                                         home: {
                                             name: gy.split(',')[1],
                                             score: a2b($(tr).find('td').eq(6).find('.pk a').eq(0).text()),

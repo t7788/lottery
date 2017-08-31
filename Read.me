@@ -12,6 +12,7 @@ forever start -l /data/lottery/logs/getMatchTrend.log -a getMatchTrend.js
 forever start -l /data/lottery/logs/switchGtja.log -a switchGtja.js
 
 forever start -l /data/lottery/logs/api_server.log -a api_server.js
+forever start -l /data/lottery/logs/getMatchEvent.log -a getMatchEvent.js
 
 # 启动
 forever start ./bin/www  ＃最简单的启动方式

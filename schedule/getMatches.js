@@ -8,7 +8,7 @@ var charset = require('superagent-charset')
 var superagent = charset(require('superagent'))
 var async = require('async')
 
-schedule.scheduleJob('0 */2 * * * *', function () {
+schedule.scheduleJob('0 */1 * * * *', function () {
     let time = moment().format('YYYY-MM-DD HH:mm:ss')
     console.log('start--------')
     console.log(time)

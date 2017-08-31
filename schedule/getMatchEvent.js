@@ -20,7 +20,7 @@ schedule.scheduleJob('*/30 * * * * *', function () {
         let baseUrl = 'http://live.500.com/detail.php?fid='
         let yMts = matches['today']
         for (let index in yMts) {
-            if (yMts[index].status > 0) {
+            if (yMts[index].status == 1 || yMts[index].status == 3) {
                 let id = yMts[index].id
                 let url = baseUrl + id + "&r=1"
                 match_urls_arr.push(url)

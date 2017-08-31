@@ -60,6 +60,12 @@ schedule.scheduleJob('0 */1 * * * *', function () {
                                     let weekday = l('#bet_content tr[fid=' + id + ']').attr('gdate').substring(0, 3)
                                     let single = single_arr.indexOf(id.toString()) == -1 ? false : true
                                     let wkday = weekday.replace('星期', '周') + number
+                                    let dish = ''
+                                    if (i == 0) {
+                                        dish = $(tr).find('td').eq(6).find('.pk .fgreen').text()
+                                    } else {
+                                        dish = $(tr).find('td').eq(6).find('.pk .fhuise').text()
+                                    }
                                     let match = {
                                         id: id,
                                         date: date,
@@ -75,7 +81,7 @@ schedule.scheduleJob('0 */1 * * * *', function () {
                                         match_time: $(tr).find('td').eq(3).text(),
                                         single: single,
                                         fix: fix,
-                                        dish: $(tr).find('td').eq(6).find('.pk .fgreen').text(),
+                                        dish: dish,
                                         home: {
                                             name: gy.split(',')[1],
                                             score: a2b($(tr).find('td').eq(6).find('.pk a').eq(0).text()),

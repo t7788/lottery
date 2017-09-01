@@ -57,9 +57,9 @@ schedule.scheduleJob('0 */1 * * * *', function () {
                                     let number = weeknum.replace(/[^0-9]/ig, "")
                                     let fix = l('#bet_content tr[fid=' + id + ']').find('td.border_left p span').text()
                                     let date = l('#bet_content tr[fid=' + id + ']').attr('pdate')
-                                    let weekday = l('#bet_content tr[fid=' + id + ']').attr('gdate').substring(0, 3)
+                                    let weekday = l('#bet_content tr[fid=' + id + ']').attr('pname2').substring(0, 2)
                                     let single = single_arr.indexOf(id.toString()) == -1 ? false : true
-                                    let wkday = weekday.replace('星期', '周') + number
+                                    let wkday = weekday + number
                                     let dish = ''
                                     if (i == 0) {
                                         dish = $(tr).find('td').eq(6).find('.pk .fgreen').text()

@@ -57,7 +57,13 @@ schedule.scheduleJob('0 */1 * * * *', function () {
                                     let number = weeknum.replace(/[^0-9]/ig, "")
                                     let fix = l('#bet_content tr[fid=' + id + ']').find('td.border_left p span').text()
                                     let date = l('#bet_content tr[fid=' + id + ']').attr('pdate')
-                                    let weekday = l('#bet_content tr[fid=' + id + ']').attr('pname2').substring(0, 2)
+                                    let weekday = l('#bet_content tr[fid=' + id + ']').parents('.bet_table').eq(0).attr('id')
+                                    if (weekday == null || weekday == 'undefined') {
+                                        weekday = l('#bet_content tr[fid=' + id + ']').attr('gdate').substring(0, 3)
+                                    } else {
+                                        weekday = weekday.substring(2, 5)
+                                    }
+                                    weekday = weekday.replace('星期', '周')
                                     let single = single_arr.indexOf(id.toString()) == -1 ? false : true
                                     let wkday = weekday + number
                                     let dish = ''
@@ -72,7 +78,7 @@ schedule.scheduleJob('0 */1 * * * *', function () {
                                         weekday: weekday,
                                         number: number,
                                         wkday: wkday,
-                                        sort_id: a2b($(tr).attr('infoid')),
+                                        sort_id: index + 1,//a2b($(tr).attr('infoid')),
                                         status: a2b($(tr).attr('status')),
                                         status_txt: $(tr).find('td').eq(4).text(),
                                         league: gy.split(',')[0],
@@ -97,7 +103,6 @@ schedule.scheduleJob('0 */1 * * * *', function () {
                                         had: liveOddsList[id].sp,
                                         hhad: liveOddsList[id].rqsp
                                     }
-
                                     if (i == 0) {
                                         matches.today.push(match)
                                     } else {
@@ -133,7 +138,7 @@ schedule.scheduleJob('0 */1 * * * *', function () {
             idArr.push('trend_' + mt.wkday)
         })
 
-        async.mapLimit(idArr, 10, (trendId, callback) => {
+        async.mapLimit(idArr, 3, (trendId, callback) => {
             fetchTrend(trendId, callback);
         }, (err, trendArr) => {
             let tArr = new Array()
@@ -156,6 +161,7 @@ schedule.scheduleJob('0 */1 * * * *', function () {
 
             redis.hmset('matches_' + today, {time: time, data: matches_str})
             redis.quit()
+            console.log('today:' + matches.today.length + " yesterday:" + matches.yesterday.length)
             console.log('end--------')
         })
 
@@ -165,7 +171,6 @@ schedule.scheduleJob('0 */1 * * * *', function () {
             callback(null, {id: trendId, had: JSON.parse(hdArr[0]), hhad: JSON.parse(hdArr[1])});
         })
     }
-
 })
 
 

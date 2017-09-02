@@ -8,7 +8,7 @@ var charset = require('superagent-charset')
 var superagent = charset(require('superagent'))
 var async = require('async')
 
-schedule.scheduleJob('0 */1 * * * *', function () {
+//schedule.scheduleJob('0 */1 * * * *', function () {
     let time = moment().format('YYYY-MM-DD HH:mm:ss')
     console.log('start--------')
     console.log(time)
@@ -71,6 +71,9 @@ schedule.scheduleJob('0 */1 * * * *', function () {
                                         dish = $(tr).find('td').eq(6).find('.pk .fgreen').text()
                                     } else {
                                         dish = $(tr).find('td').eq(6).find('.pk .fhuise').text()
+                                    }
+                                    if(index==0){
+                                        console.log('dish:'+dish)
                                     }
                                     let match = {
                                         id: id,
@@ -171,7 +174,7 @@ schedule.scheduleJob('0 */1 * * * *', function () {
             callback(null, {id: trendId, had: JSON.parse(hdArr[0]), hhad: JSON.parse(hdArr[1])});
         })
     }
-})
+//})
 
 
 function a2b(str) {

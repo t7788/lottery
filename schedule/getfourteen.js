@@ -1,11 +1,9 @@
 // 引入依赖
-var schedule = require('node-schedule')
-var superagent = require('superagent')
-var moment = require('moment')
-var cheerio = require('cheerio')
-var request = require('request')
-var http = require('http')
-
+let schedule = require('node-schedule')
+let superagent = require('superagent')
+let moment = require('moment')
+let cheerio = require('cheerio')
+let phantom = require('phantom')
 
 schedule.scheduleJob('0 */30 * * * *', function () {
     let time = moment().format('YYYY-MM-DD HH:mm:ss')
@@ -31,35 +29,50 @@ schedule.scheduleJob('0 */30 * * * *', function () {
 
                 let periods = [period - 1, period]
                 console.log(periods)
+
                 for (let i = 0; i < 2; i++) {
                     let url = "http://i.sporttery.cn/wap/fb_lottery/fb_lottery_match?key=wilo&num=" + periods[i]
-                    var options = {
-                        url: url,
-                        headers: {
-                            'Host': 'i.sporttery.cn',
-                            'Cookie': 'COLLCK=1186171230; Hm_lvt_860f3361e3ed9c994816101d37900758=1503048846; COLLCK=1186171230',
-                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:55.0) Gecko/20100101 Firefox/55.0'
-                        }
-                    }
-
-                    request(options, function (error, response, body) {
-                        console.log(body)
-                        if (!error && response.statusCode == 200) {
+                    let sitepage = null
+                    let phInstance = null
+                    phantom.create()
+                        .then(instance => {
+                            phInstance = instance;
+                            return instance.createPage();
+                        })
+                        .then(page => {
+                            sitepage = page;
+                            return page.open(url);
+                        })
+                        .then(status => {
+                            console.log(status)
+                            if ('success' == status) {
+                                return sitepage.property('content')
+                            }
+                        })
+                        .then(content => {
+                            let $ = cheerio.load(content)
+                            let body = $('body').text()
                             let jsonObj = JSON.parse(body)
                             if (jsonObj.status.code == 0) {
+                                console.log(periods[i])
                                 items.push({key: "fourteen_" + periods[i], info: body})
                                 count++
                                 endQuery()
+
+                                sitepage.close()
+                                phInstance.exit()
                             } else {
                                 console.log(jsonObj.status)
                             }
-                        } else {
-                            console.log(error)
-                        }
-                    })
+
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        })
                 }
 
                 function endQuery() {
+
                     if (count == 2) {
                         items.forEach(function (item) {
                             redis.set(item.key, item.info).then(function (result) {
@@ -72,6 +85,5 @@ schedule.scheduleJob('0 */30 * * * *', function () {
             }
         })
 })
-
 
 

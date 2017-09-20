@@ -67,7 +67,9 @@ schedule.scheduleJob('0 */1 * * * *', function () {
                                             weekday = weekday.substring(2, 5)
                                         }
 
-                                        weekday = weekday.replace('星期', '周')
+                                        if (weekday != null) {
+                                            weekday = weekday.replace('星期', '周')
+                                        }
                                         let single = single_arr.indexOf(id.toString()) == -1 ? false : true
                                         let wkday = weekday + number
                                         let dish = ''

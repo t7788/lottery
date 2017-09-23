@@ -52,67 +52,70 @@ schedule.scheduleJob('0 */1 * * * *', function () {
                                 eval(script)
                                 $("#table_match tbody tr").each(function (index, tr) {
                                     if ($(tr).attr('parentid') == null) {
-                                        let gy = $(tr).attr('gy')
                                         let id = a2b($(tr).attr('fid'))
-                                        let weeknum = $(tr).find('td').eq(0).text()
-                                        let number = weeknum.replace(/[^0-9]/ig, "")
-                                        let fix = l('#bet_content tr[fid=' + id + ']').find('td.border_left p span').text()
                                         let date = l('#bet_content tr[fid=' + id + ']').attr('pdate')
-                                        let weekday = l('#bet_content tr[fid=' + id + ']').parents('.bet_table').eq(0).attr('id')
-                                        if (weekday == null || weekday == 'undefined') {
-                                            if (l('#bet_content tr[fid=' + id + ']').attr('gdate') != null) {
-                                                weekday = l('#bet_content tr[fid=' + id + ']').attr('gdate').substring(0, 3)
-                                            }
-                                        } else {
-                                            weekday = weekday.substring(2, 5)
-                                        }
+                                        if (date != null) {
+                                            let gy = $(tr).attr('gy')
+                                            let weeknum = $(tr).find('td').eq(0).text()
+                                            let number = weeknum.replace(/[^0-9]/ig, "")
+                                            let fix = l('#bet_content tr[fid=' + id + ']').find('td.border_left p span').text()
 
-                                        if (weekday != null) {
-                                            weekday = weekday.replace('星期', '周')
-                                        }
-                                        let single = single_arr.indexOf(id.toString()) == -1 ? false : true
-                                        let wkday = weekday + number
-                                        let dish = ''
-                                        if (i == 0) {
-                                            dish = $(tr).find('td').eq(6).find('.pk .fgreen').text()
-                                        } else {
-                                            dish = $(tr).find('td').eq(6).find('.pk .fhuise').text()
-                                        }
-                                        let match = {
-                                            id: id,
-                                            date: date,
-                                            weekday: weekday,
-                                            number: number,
-                                            wkday: wkday,
-                                            sort_id: index + 1,//a2b($(tr).attr('infoid')),
-                                            status: a2b($(tr).attr('status')),
-                                            status_txt: $(tr).find('td').eq(4).text(),
-                                            league: gy.split(',')[0],
-                                            bgcolor: $(tr).find('td.ssbox_01').eq(0).attr('bgcolor'),
-                                            order: $(tr).find('td').eq(2).text(),
-                                            match_time: $(tr).find('td').eq(3).text(),
-                                            single: single,
-                                            fix: fix,
-                                            dish: dish,
-                                            home: {
-                                                name: gy.split(',')[1],
-                                                score: a2b($(tr).find('td').eq(6).find('.pk a').eq(0).text()),
-                                                yellow: a2b($(tr).find('td').eq(5).find('.yellowcard').text()),
-                                                red: a2b($(tr).find('td').eq(5).find('.redcard').text()),
-                                            },
-                                            away: {
-                                                name: gy.split(',')[2],
-                                                score: a2b($(tr).find('td').eq(6).find('.pk a').eq(2).text()),
-                                                yellow: a2b($(tr).find('td').eq(7).find('.yellowcard').text()),
-                                                red: a2b($(tr).find('td').eq(7).find('.redcard').text()),
-                                            },
-                                            had: liveOddsList[id].sp,
-                                            hhad: liveOddsList[id].rqsp
-                                        }
-                                        if (i == 0) {
-                                            matches.today.push(match)
-                                        } else {
-                                            matches.yesterday.push(match)
+                                            let weekday = l('#bet_content tr[fid=' + id + ']').parents('.bet_table').eq(0).attr('id')
+                                            if (weekday == null || weekday == 'undefined') {
+                                                if (l('#bet_content tr[fid=' + id + ']').attr('gdate') != null) {
+                                                    weekday = l('#bet_content tr[fid=' + id + ']').attr('gdate').substring(0, 3)
+                                                }
+                                            } else {
+                                                weekday = weekday.substring(2, 5)
+                                            }
+
+                                            if (weekday != null) {
+                                                weekday = weekday.replace('星期', '周')
+                                            }
+                                            let single = single_arr.indexOf(id.toString()) == -1 ? false : true
+                                            let wkday = weekday + number
+                                            let dish = ''
+                                            if (i == 0) {
+                                                dish = $(tr).find('td').eq(6).find('.pk .fgreen').text()
+                                            } else {
+                                                dish = $(tr).find('td').eq(6).find('.pk .fhuise').text()
+                                            }
+                                            let match = {
+                                                id: id,
+                                                date: date,
+                                                weekday: weekday,
+                                                number: number,
+                                                wkday: wkday,
+                                                sort_id: index + 1,//a2b($(tr).attr('infoid')),
+                                                status: a2b($(tr).attr('status')),
+                                                status_txt: $(tr).find('td').eq(4).text(),
+                                                league: gy.split(',')[0],
+                                                bgcolor: $(tr).find('td.ssbox_01').eq(0).attr('bgcolor'),
+                                                order: $(tr).find('td').eq(2).text(),
+                                                match_time: $(tr).find('td').eq(3).text(),
+                                                single: single,
+                                                fix: fix,
+                                                dish: dish,
+                                                home: {
+                                                    name: gy.split(',')[1],
+                                                    score: a2b($(tr).find('td').eq(6).find('.pk a').eq(0).text()),
+                                                    yellow: a2b($(tr).find('td').eq(5).find('.yellowcard').text()),
+                                                    red: a2b($(tr).find('td').eq(5).find('.redcard').text()),
+                                                },
+                                                away: {
+                                                    name: gy.split(',')[2],
+                                                    score: a2b($(tr).find('td').eq(6).find('.pk a').eq(2).text()),
+                                                    yellow: a2b($(tr).find('td').eq(7).find('.yellowcard').text()),
+                                                    red: a2b($(tr).find('td').eq(7).find('.redcard').text()),
+                                                },
+                                                had: liveOddsList ? liveOddsList[id].sp : [0, 0, 0],
+                                                hhad: liveOddsList ? liveOddsList[id].rqsp : [0, 0, 0]
+                                            }
+                                            if (i == 0) {
+                                                matches.today.push(match)
+                                            } else {
+                                                matches.yesterday.push(match)
+                                            }
                                         }
                                     }
                                 })
